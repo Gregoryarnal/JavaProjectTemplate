@@ -1,0 +1,39 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Launch JavaProjectTemplate",
+            "request": "launch",
+            "mainClass": "me.dcal.java_project_template.JavaProjectTemplate",
+            "projectName": "thermoconnect"
+        },
+        {
+            "type": "java",
+            "name": "Launch Mqtt",
+            "request": "launch",
+            "mainClass": "me.dcal.thermoconnect.Mqtt",
+            "projectName": "thermoconnect"
+        },
+        {
+            "type": "java",
+            "name": "Launch InfluxDB2Example",
+            "request": "launch",
+            "mainClass": "me.dcal.thermoconnect.InfluxDB2Example",
+            "projectName": "thermoconnect"
+        },
+        {
+            "type": "java",
+            "name": "Launch ThermoconnectApplication",
+            "request": "launch",
+            "mainClass": "me.dcal.thermoconnect.ThermoconnectApplication",
+            "projectName": "thermoconnect"
+        },
+        {
+            "type": "java",
+            "name": "DEBUG",
+            "request": "launch",
+            "mainClass": "ThermoConnectApplication"
+        }
+    ],
+}
