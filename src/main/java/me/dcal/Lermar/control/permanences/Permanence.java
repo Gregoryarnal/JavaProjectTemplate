@@ -10,30 +10,24 @@ import java.util.stream.Stream;
 
 
 public class Permanence {
-    static String montantePath = "src/main/resources/permanences";
     List<Path> paths;
-    public Permanence() throws IOException {
+    String name;
+    List<String> values;
 
-		Path path = Paths.get(montantePath);
-        paths = listPermanencesFiles(path);
-        paths.forEach(x -> System.out.println(x));
+    public Permanence(String name, List<String> values) throws IOException {
+        this.name = name;
+        this.values = values;
+    }
+
+    public List<String> getValue(){
+        return this.values;
+    }
+
+    public String getName(){
+        return this.name;
     }
 
     public List<Path> getPermanencesPath(){
         return this.paths;
     }
-   
-
-
-    public static List<Path> listPermanencesFiles(Path path) throws IOException {
-
-        List<Path> result;
-        try (Stream<Path> walk = Files.walk(path)) {
-            result = walk.filter(Files::isRegularFile)
-                    .collect(Collectors.toList());
-        }
-        return result;
-
-    }
-
 }

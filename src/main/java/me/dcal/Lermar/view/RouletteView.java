@@ -23,20 +23,25 @@ import java.io.IOException;
 import java.nio.file.Path;
 
 import javafx.scene.paint.Color;
+import me.dcal.Lermar.control.GameController;
 import me.dcal.Lermar.control.permanences.Permanence;
 
 public class RouletteView extends JFrame { 
 	Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
 	JTable table;
 	DefaultTableModel model;
-	public RouletteView(Permanence perm) throws IOException{
+	GameController gameController;
+	Permanence perm;
 
+	public RouletteView(GameController gameController) throws IOException{
+		this.gameController = gameController;
+		// this.perm = perm;
 	 	setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		setSize(new Dimension((int) (dimension.width*0.9), (int) (dimension.height*0.9)));
 		setTitle("LERMAR");
 
-		add(createContainerWithMenu(perm), BorderLayout.NORTH);
+		add(createContainerWithMenu(), BorderLayout.NORTH);
 		add(BackgroundContainer(), BorderLayout.WEST);
 		add(createGameContainer(), BorderLayout.CENTER);
 		add(createControleContainer(), BorderLayout.SOUTH);
@@ -53,13 +58,15 @@ public class RouletteView extends JFrame {
 		ActionListener actionListener = new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
 			   String str = event.getActionCommand();
+			   Permanence active = gameController.getActivePermanence();
 			   model.addRow(new Object[]{
-						1, 
-						2,
-						2,
-						1,
-						1
+						model.getRowCount()+1, 
+						active.getValue().get(model.getRowCount()),
+						0,
+						0,
+						0
 				});
+				// model.color
 			   System.out.println("Clicked = " + str);
 			}
 		 };
@@ -77,7 +84,12 @@ public class RouletteView extends JFrame {
 		Object[][] data = {};
 
 		model = new DefaultTableModel(columnNames, 0);
+		
 		table = new JTable(model);
+
+		// Color alternateColor = Color.RED;
+    	// Color whiteColor = Color.WHITE;
+		// model.get;
 		JScrollPane wcrool = new JScrollPane(table);
 		// bt.setSize(dimension.width/2, (int) (dimension.height*0.8));
 		return wcrool;
@@ -85,20 +97,38 @@ public class RouletteView extends JFrame {
 
 	private JLabel BackgroundContainer() throws IOException {
 		ImageIcon background;
-
+		
 		background = new ImageIcon(ImageIO.read(new File("src/main/resources/fond_roulette.png")));
 		background = new ImageIcon(background.getImage().getScaledInstance(dimension.width/2, (int) (dimension.height*0.8),Image.SCALE_DEFAULT));
-
 		JLabel l = new JLabel(background);
+		
+		// ActionListener actionListener = new ActionListener() {
+		// 	public void actionPerformed(ActionEvent event) {
+		// 	   String str = event.getActionCommand();
+		// 	   Permanence active = gameController.getActivePermanence();
+		// 	   model.addRow(new Object[]{
+		// 				model.getRowCount()+1, 
+		// 				active.getValue().get(model.getRowCount()),
+		// 				0,
+		// 				0,
+		// 				0
+		// 		});
+		// 		// model.color
+		// 	   System.out.println("Clicked = " + str);
+		// 	}
+		//  };
+		// //  bt.setActionCommand("FirstButton");
+		//  l.addActionListener(actionListener);
+
 
 		return l;
 	}
 
-	private static JMenuBar createContainerWithMenu(Permanence perm) {
+	private JMenuBar createContainerWithMenu() {
 		// JRootPane rootPane = new JRootPane();
 		// rootPane.getContentPane().add(createLabel("", Color.PINK));
 		JMenuBar menuBar = new JMenuBar();
-		menuBar.add(createMenu("Jeu",perm, "Jouer", "Rechercher", "Quitter"));
+		menuBar.add(createMenu("Jeu",this.perm, "Jouer", "Rechercher", "Quitter"));
 		menuBar.add(createMenu("Méthodes", "Acoussur", "Osmose NAS", "Colonnes et douzaines","Thaïlandaise", "Express 20/24", "Ad Libitim"));
 		menuBar.add(createMenu("Montantes", "NAS", "D'Alembert", "Contre d'Alembert", "Hollandaise", "Americaine", "Piquemouche", "Wells", "Contre Wells", "MIDAS", "A paliers", "Pascal"));
 		menuBar.add(createMenu("Solveur", "Acoussur"));
@@ -108,7 +138,7 @@ public class RouletteView extends JFrame {
 		return menuBar;
 	}
   
-	private static JMenu createMenu(String menuLabel,Permanence perm,  String... subMenuLabels) {
+	public JMenu createMenu(String menuLabel,Permanence perm,  String... subMenuLabels) {
 		JMenu menu = new JMenu(menuLabel);
 		for (String subMenuLabel : subMenuLabels) {
 			
@@ -119,13 +149,29 @@ public class RouletteView extends JFrame {
 					   String str = event.getActionCommand();
 					//    JRootPane rootPane = new JRootPane();
 					   JDialog jd = new JDialog();
+					   jd.setTitle("Jouer sur une Permanence");
 					   jd.setLayout(new FlowLayout());
-					   for (Path perma : perm.getPermanencesPath()){
-						JLabel jLabel = new JLabel(perma.toString());
-						jd.add(jLabel);
-
-
-					   }
+					   try {
+						for (Permanence perma : gameController.getPermanences()){
+							JButton btn = new JButton(perma.getName());
+							ActionListener actionListene = new ActionListener() {
+								public void actionPerformed(ActionEvent event) {
+									gameController.setActivePermanence(perma);
+									jd.setVisible(false);
+									if (model.getRowCount() > 0) {
+										for (int i = model.getRowCount() - 1; i > -1; i--) {
+											model.removeRow(i);
+										}
+									}
+								}
+							};
+							btn.addActionListener(actionListene);
+							jd.add(btn);
+						   }
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
         				jd.setBounds(500, 300, 400, 300);
 					//    JFrame jFrame = new JFrame();
 					//    String getMessage = JOptionPane.showInputDialog(jFrame, "Enter your message");
