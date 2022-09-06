@@ -3,6 +3,20 @@
     "configurations": [
         {
             "type": "java",
+            "name": "Launch montantes",
+            "request": "launch",
+            "mainClass": "me.dcal.Lermar.control.montantes.montantes",
+            "projectName": "thermoconnect"
+        },
+        {
+            "type": "java",
+            "name": "Launch Lermar",
+            "request": "launch",
+            "mainClass": "me.dcal.Lermar.Lermar",
+            "projectName": "thermoconnect"
+        },
+        {
+            "type": "java",
             "name": "Launch JavaProjectTemplate",
             "request": "launch",
             "mainClass": "me.dcal.java_project_template.JavaProjectTemplate",
